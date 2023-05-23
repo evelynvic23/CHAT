@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat</title>
+    <link rel="stylesheet" href="css/estilo.css">
+
+    <style>
+      
+    </style>
+    
+</head>
+<body id="titulo">
+
+  
+
+   
+
+    <div id="tudo">
+
+ 
+
+    <header>
+
+  
+    
+
+    <div class="header">
+
+       
+        <img src="imagens/perfil.png" alt="" id="perfil">
+
+        <p class="perfil"> <input placeholder="Nome de usuário: " class="input" name="text" type="text" id="nome" >
+            <br>
+        
+        </p>
+
+<button id="bottone5" onclick="troca()">...</button>
+
+
+        
+       
+        
+       
+    </div>
+
+</header>
+
+
+
+<div id="tudo2">
+
+
+
+    <div id="mensagens"></div>
+  
+
+</div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<form id="form">
+       
+   
+
+
+    <input class="input2" name="text" type="text"   id="mensagem" placeholder="Sua mensagem">
+
+
+    <br>
+
+
+
+    <button class="button">
+        <div class="svg-wrapper-1">
+          <div class="svg-wrapper">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+              <path fill="none" d="M0 0h24v24H0z"></path>
+              <path fill="currentColor" d="M1.946 9.315c-.522-.174-.527-.455.01-.634l19.087-6.362c.529-.176.832.12.684.638l-5.454 19.086c-.15.529-.455.547-.679.045L12 14l6-8-8 6-8.054-2.685z"></path>
+            </svg>
+          </div>
+        </div>
+      
+      </button>
+</form>
+
+
+  
+</body>
+
+
+    <!-- Importar o script do Socket -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+
+
+
+
+
+        var Trocaa = true;
+        function troca(){
+
+            if(Trocaa==true){
+             
+                document.getElementById("titulo").style.background = "black";
+                Trocaa=false;
+            }else{
+             
+                document.getElementById("titulo").style.background = "#F0F0F1";
+                Trocaa=true;
+            }
+        }
+
+
+
+
+
+
+        //Criar uma instancia do socket.io
+        const socket = io()
+        //Seleciona o input nome
+        const nomeInput = document.getElementById('nome');
+        //Seleciona o input da mensagem
+        const mensagemInput = document.getElementById('mensagem');
+        //Selecionar a lista de mensagem
+        const mensagens = document.getElementById('mensagens');
+
+        //Adiciona um evento para o envio do formulario não atualizar
+        document.querySelector('form').addEventListener('submit', event => {
+            //Previne o envio do formulário
+            event.preventDefault();
+
+            //Obtem o valor do input do nome do usuario
+            const nome = nomeInput.value;
+            //Obtem o valor do input da mensagem
+            const mensagem = mensagemInput.value;
+
+            //Criar um evento chamado chat message - EMIT
+            //Um metodo chamado trim que remove os espaços em branco do inicio ao fim
+            nome.trim() && mensagem.trim() && socket.emit('chat message', {nome, mensagem});
+            //Limpa o input a mensagem
+            mensagemInput.value = '';
+            //Desabilita o input do nome do usuario após a primeira mensagem
+            nomeInput.disabled = true;
+        });
+        //Adiciona um evento para mensagem recebida do servidor
+        socket.on('chat message', dados => {
+            //Cria um elemento de lista para exibir as mensagens
+            const lista = document.createElement('div')
+
+            if(dados.nome === nomeInput.value){
+                lista.setAttribute('id', 'pessoa1');
+            }else{
+                lista.setAttribute('id', 'pessoa2');
+            }
+            //Definir o texto da mensagem
+            lista.textContent = `${dados.nome}: ${dados.mensagem}`;
+            //Adiciona o elemento na lista de mensagens
+            mensagens.appendChild(lista);
+        });
+
+
+
+
+
+       
+
+    </script>
+
+
+</div>
+</body>
+</html>
